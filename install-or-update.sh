@@ -2,12 +2,13 @@
 
 set -e
 
+# Navigate to the script's directory
+cd "$(dirname "$0")"
+
 # GitHub-related variables
 GITHUB_USER="syncthing"
 GITHUB_REPO="syncthing"
 ARTIFACT_PATTERN="syncthing-linux-amd64"
-
-INSTALL_DIR="$(cd "$(dirname "$0")" && pwd)/syncthing"  # Install directory is ./syncthing relative to the script
 
 # Determine what the latest version is
 echo "Finding latest version..."
@@ -21,8 +22,8 @@ fi
 echo "- found: $ARTIFACT_TAGNAME"
 
 # Check if the latest is the same as the current version
-if [[ -f "$INSTALL_DIR/version.txt" ]]; then
-  current_version=$(<"$INSTALL_DIR/version.txt")
+if [[ -f syncthing/version.txt ]]; then
+  current_version=$(<syncthing/version.txt)
   current_version=$(echo "$current_version" | xargs) # Trim whitespace
   if [[ "$current_version" == "$ARTIFACT_TAGNAME" ]]; then
     echo
@@ -45,9 +46,9 @@ if pgrep -x "syncthing" > /dev/null; then
 fi
 
 # Removing old version
-if [[ -d "$INSTALL_DIR" ]]; then
+if [[ -d syncthing ]]; then
   echo "Removing old version..."
-  rm -rf "$INSTALL_DIR"
+  rm -rf syncthing
 fi
 
 # Downloading latest artifact
@@ -56,9 +57,9 @@ echo "Downloading $ARTIFACT_URL..."
 
 # Extract
 echo "Extracting..."
-mkdir -p "$INSTALL_DIR"
-tar -xf "$ARTIFACT_FILENAME" -C "$INSTALL_DIR" --strip-components=1
-echo "$ARTIFACT_TAG" > "$INSTALL_DIR/version.txt"
+mkdir -p syncthing
+tar -xf "$ARTIFACT_FILENAME" -C syncthing --strip-components=1
+echo "$ARTIFACT_TAG" > syncthing/version.txt
 rm -f "$ARTIFACT_FILENAME"
 
 # And run it again if it was running previously
