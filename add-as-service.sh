@@ -38,7 +38,6 @@ ORIGINAL_PARAMS=$(grep "^$DEFAULT_EXECSTART" "$DEST_SERVICE_FILE" | cut -d' ' -f
 # Replace the DEFAULT_EXECSTART line with the actual binary path and preserved parameters
 sed -i "s|^$DEFAULT_EXECSTART.*|ExecStart=$SYNCTHING_BINARY $ORIGINAL_PARAMS|" "$DEST_SERVICE_FILE"
 echo "Updated ExecStart line in $DEST_SERVICE_FILE to: ExecStart=$SYNCTHING_BINARY $ORIGINAL_PARAMS"
-echo "Original Params: $ORIGINAL_PARAMS"
 
 # Reload systemd user daemon to recognize the new service
 systemctl --user daemon-reload
