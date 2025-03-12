@@ -52,7 +52,6 @@ if [[ -d syncthing ]]; then
 fi
 
 # Downloading latest artifact
-echo "Downloading $ARTIFACT_URL..."
 ./generic/github-fetch-latest-artifact.sh "$GITHUB_USER" "$GITHUB_REPO" "$ARTIFACT_PATTERN" --download
 
 # Extract
