@@ -30,7 +30,7 @@ fi
 
 # If the service is not found, start Syncthing manually
 echo "Syncthing service not available. Starting Syncthing manually..."
-nohup "$SYNCTHING_BINARY" serve --no-console --no-browser --no-upgrade --no-default-folder --logfile=- > /dev/null 2>&1 &
+nohup "$SYNCTHING_BINARY" serve --no-browser --no-upgrade --logfile=- > /dev/null 2>&1 &
 if [[ $? -eq 0 ]]; then
   echo "Syncthing started manually."
 else
