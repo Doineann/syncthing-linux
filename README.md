@@ -4,7 +4,7 @@ Some scripts for managing [Syncthing](https://syncthing.net/) on Linux...
 
 ### How to use?
 
-- `install-or-update.sh` to download and install the latest version of syncthing (will extract to .\syncthing)
+- `update.sh` to download and install the latest version of syncthing (will extract to .\syncthing)
 - `add-as-service.sh` to run syncthing as service at logon
 - `remove-service.sh` to remove syncthing as service at logon
 - `start.sh` and `stop.sh` to start/stop syncthing manually
