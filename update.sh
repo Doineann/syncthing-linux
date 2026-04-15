@@ -2,13 +2,6 @@
 
 set -e
 
-# Require elevated privileges
-if [ "$EUID" != 0 ]; then
-    echo "This script requires elevated privileges."
-    sudo "$0" "$@"
-    exit $?
-fi
-
 # Navigate to the script's directory
 cd "$(dirname "$0")"
 
@@ -16,12 +9,6 @@ cd "$(dirname "$0")"
 GITHUB_USER="syncthing"
 GITHUB_REPO="syncthing"
 ARTIFACT_PATTERN="syncthing-linux-amd64"
-
-# Check if Syncthing is running
-if pgrep -x "syncthing" > /dev/null; then
-    echo "WARNING: Syncthing is currently running. Please stop it before updating."
-    exit 1
-fi
 
 # Determine what the latest version is
 echo "Finding the latest version..."
@@ -45,6 +32,7 @@ if [[ -x syncthing/syncthing ]]; then
         current_version=$(echo "$current_version" | xargs) # Trim whitespace
         echo "Currently installed version: $current_version"
 
+        # Already up to date
         if [[ "$current_version" == "$ARTIFACT_TAGNAME" ]]; then
             echo
             echo "Latest version already installed!"
@@ -65,6 +53,21 @@ else
     echo
     echo "Installing version: $ARTIFACT_TAGNAME"
     echo
+fi
+
+# Check if Syncthing is running
+WAS_RUNNING=0
+echo "Checking if Syncthing is running..."
+if pgrep -x "syncthing" > /dev/null; then
+    WAS_RUNNING=1
+    ./stop.sh
+
+    echo "Waiting for Syncthing to stop..."
+    while pgrep -x "syncthing" > /dev/null; do
+        sleep 1
+    done
+else
+    echo "Syncthing is not running."
 fi
 
 # Remove the old version
@@ -95,4 +98,10 @@ rm -f "$ARTIFACT_FILENAME"
 echo
 echo "Updated to $ARTIFACT_TAGNAME!"
 echo
+
+# Restart Syncthing if it was running before update
+if [[ $WAS_RUNNING -eq 1 ]]; then
+    ./start.sh
+fi
+
 exit 0
